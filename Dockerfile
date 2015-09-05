@@ -1,10 +1,14 @@
-FROM hypriot/rpi-node:0.12.0
+FROM hypriot/rpi-alpine-scratch
+MAINTAINER Adam Ossenford <AdamOssenford@gmail.com>
+RUN apk update && apk add nginx && echo "daemon off;" >> /etc/nginx/nginx.conf \
+ && mkdir -p /tmp/nginx/client-body
 
-ADD src/ /src
-WORKDIR /src
+# Bring in the baymax
+COPY html /usr/share/nginx/html/
+COPY start_nginx.sh /
 
-RUN npm install
-
+# Expose port 80
 EXPOSE 80
 
-CMD ["node", "index.js"]
+# Run nginx
+CMD /start_nginx.sh
